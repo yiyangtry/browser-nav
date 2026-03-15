@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的网站导航</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <h1>我的网站导航</h1>
+      <p>快速打开常用网站，维护入口请去管理页。</p>
+    </header>
+
+    <section class="panel">
+      <div class="list-head">
+        <h2>导航页</h2>
+        <div class="toolbar">
+          <button id="refreshBtn" class="ghost-btn" type="button">刷新数据</button>
+          <a class="ghost-btn link-btn" href="manage.html" target="_blank" rel="noopener noreferrer">进入管理页</a>
+        </div>
+      </div>
+      <div id="siteList" class="group-list"></div>
+    </section>
+  </main>
+
+  <script src="sites-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
