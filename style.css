@@ -78,6 +78,68 @@ body {
   gap: 20px;
 }
 
+.search-container {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 16px 20px;
+  backdrop-filter: blur(14px);
+  box-shadow: var(--glow);
+}
+
+.search-box {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 12px 40px 12px 14px;
+  font-size: 15px;
+  background: rgba(10, 12, 20, 0.65);
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(255, 179, 71, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.2);
+}
+
+.search-shortcut {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.search-highlight {
+  background: rgba(255, 179, 71, 0.3);
+  color: #ffe7b3;
+  padding: 2px 0;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -487,6 +549,25 @@ body {
 
   .hero {
     padding: 24px 20px 12px;
+  }
+
+  .search-container {
+    padding: 12px 16px;
+  }
+
+  .search-box {
+    max-width: 100%;
+  }
+
+  .search-input {
+    padding: 10px 36px 10px 12px;
+    font-size: 14px;
+  }
+
+  .search-shortcut {
+    right: 10px;
+    font-size: 11px;
+    padding: 3px 6px;
   }
 
   .site-list {
