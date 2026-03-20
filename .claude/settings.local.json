@@ -4,7 +4,30 @@
       "Bash(node:*)",
       "Bash(npm install:*)",
       "Bash(openspec:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(find . -name \"*.json\" -o -name \"package*.json\" -o -name \"tsconfig.json\" -o -name \"vite.config.*\" 2>/dev/null | head -20)",
+      "Bash(pgrep -lf \"npm install\" || echo \"npm install not running\")",
+      "Bash(pgrep -lf \"npm install\" || echo \"npm install completed\")",
+      "Bash(pkill -f \"npm install\" && sleep 2 && echo \"killed\")",
+      "Bash(pkill -f \"npm install\" && echo \"killed npm install\")",
+      "Bash(npx tsc --noEmit 2>&1 | head -50)",
+      "Bash(npx tsc --noEmit 2>&1)",
+      "Bash(npm run dev)",
+      "Bash(curl -s http://localhost:*)",
+      "Bash(curl -sI http://localhost:*)",
+      "Bash(curl -s \"http://localhost:*)",
+      "Bash(curl * http://localhost:5173*)",
+      "Bash(curl * http://localhost:5173*)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(sleep 3 && curl -s http://localhost:5173/src/stores/navStore.ts 2>&1 | head -10)",
+      "Bash(curl -s http://localhost:5173/ | grep -E \"\\(script|error\\)\" | head -10)",
+      "Bash(grep -l \"export default\" /Users/yiyang/work/project/others/browser-nav/src/components/navigation/*.tsx)",
+      "Bash(grep -l \"export default\" /Users/yiyang/work/project/others/browser-nav/src/components/management/*.tsx)",
+      "Bash(npm run build 2>&1 | head -50)",
+      "Bash(ls -la /Users/yiyang/work/project/others/browser-nav/*.html)",
+      "Bash(grep -r \"serviceWorker\\\\|SW\\\\|PWA\" /Users/yiyang/work/project/others/browser-nav/src/ --include=\"*.tsx\" --include=\"*.ts\" --include=\"*.js\" 2>/dev/null | head -10)",
+      "Bash(grep -r \"registerSW\\\\|vite-pwa\" /Users/yiyang/work/project/others/browser-nav/ --include=\"*.json\" --include=\"*.tsx\" --include=\"*.ts\" 2>/dev/null | head -10)"
     ]
   }
 }
