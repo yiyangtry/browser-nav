@@ -13,6 +13,19 @@
   --accent: #7f6bff;
   --danger: #ff6b6b;
   --glow: 0 24px 60px rgba(15, 19, 30, 0.55);
+
+  /* Sidebar variables */
+  --sidebar-width: 256px;
+  --sidebar-width-collapsed: 64px;
+  --sidebar-bg: rgba(26, 30, 44, 0.95);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.06);
+  --sidebar-active-bg: rgba(255, 179, 71, 0.15);
+  --sidebar-active-border: rgba(255, 179, 71, 0.5);
+  --sidebar-text: #f4f5fb;
+  --sidebar-text-muted: #a6b0c3;
+  --sidebar-transition: 300ms ease;
+  --sidebar-backdrop: rgba(7, 9, 15, 0.72);
 }
 
 * {
@@ -30,6 +43,29 @@ body {
     radial-gradient(circle at 60% 90%, rgba(71, 168, 255, 0.18), transparent 38%),
     var(--bg);
   padding: 32px 18px 60px;
+}
+
+/* Remove body padding when using sidebar layout */
+body:has(.sidebar-layout) {
+  padding: 0;
+}
+
+/* Adjust container padding for sidebar layout */
+.sidebar-layout .container {
+  padding: 32px 32px 60px;
+  max-width: 100%;
+}
+
+/* Adjust main content area for sidebar layout */
+.sidebar-layout__main {
+  min-height: 100vh;
+}
+
+/* Responsive adjustments for sidebar layout */
+@media (max-width: 767px) {
+  .sidebar-layout .container {
+    padding: 80px 16px 40px;
+  }
 }
 
 .container {

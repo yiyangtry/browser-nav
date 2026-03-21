@@ -1,0 +1,102 @@
+/* MenuItem */
+.menu-item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-item__link,
+.menu-item__button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--sidebar-text);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item__link:hover,
+.menu-item__button:hover {
+  background: var(--sidebar-hover-bg);
+}
+
+.menu-item__link:focus-visible,
+.menu-item__button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.menu-item__link--active {
+  background: var(--sidebar-active-bg);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.menu-item__link--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background: var(--brand);
+  border-radius: 0 2px 2px 0;
+}
+
+.menu-item--disabled .menu-item__link,
+.menu-item--disabled .menu-item__button {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Icon */
+.menu-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.menu-item--collapsed .menu-item__icon {
+  margin-right: 0;
+}
+
+/* Label */
+.menu-item__label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Collapsed state - center the icon */
+.sidebar--collapsed .menu-item__link,
+.sidebar--collapsed .menu-item__button {
+  justify-content: center;
+  padding: 10px;
+}
+
+.sidebar--collapsed .menu-item__label,
+.sidebar--collapsed .badge {
+  display: none;
+}
+
+/* Keyboard navigation - Skip disabled items */
+.menu-item--disabled {
+  display: none;
+}

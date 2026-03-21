@@ -4,6 +4,7 @@ import { Layout } from './components/common/Layout';
 
 const NavigationPage = lazy(() => import('./pages/NavigationPage'));
 const ManagementPage = lazy(() => import('./pages/ManagementPage'));
+const Demo1Page = lazy(() => import('./pages/lab/Demo1Page'));
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <ManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'lab/demo1',
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Demo1Page />
           </Suspense>
         ),
       },

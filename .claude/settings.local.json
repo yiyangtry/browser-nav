@@ -27,7 +27,10 @@
       "Bash(npm run build 2>&1 | head -50)",
       "Bash(ls -la /Users/yiyang/work/project/others/browser-nav/*.html)",
       "Bash(grep -r \"serviceWorker\\\\|SW\\\\|PWA\" /Users/yiyang/work/project/others/browser-nav/src/ --include=\"*.tsx\" --include=\"*.ts\" --include=\"*.js\" 2>/dev/null | head -10)",
-      "Bash(grep -r \"registerSW\\\\|vite-pwa\" /Users/yiyang/work/project/others/browser-nav/ --include=\"*.json\" --include=\"*.tsx\" --include=\"*.ts\" 2>/dev/null | head -10)"
+      "Bash(grep -r \"registerSW\\\\|vite-pwa\" /Users/yiyang/work/project/others/browser-nav/ --include=\"*.json\" --include=\"*.tsx\" --include=\"*.ts\" 2>/dev/null | head -10)",
+      "Bash(npm run:*)",
+      "Bash(npm list:*)",
+      "WebSearch"
     ]
   }
 }

@@ -23,3 +23,6 @@ export const defaultSites: Site[] = [
 ];
 
 export const defaultGroups: Group[] = ["AI 工具", "开发", "学习", "资讯", "娱乐", DEFAULT_CATEGORY];
+
+// Export menu types
+export * from './menu';
