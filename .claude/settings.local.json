@@ -30,7 +30,9 @@
       "Bash(grep -r \"registerSW\\\\|vite-pwa\" /Users/yiyang/work/project/others/browser-nav/ --include=\"*.json\" --include=\"*.tsx\" --include=\"*.ts\" 2>/dev/null | head -10)",
       "Bash(npm run:*)",
       "Bash(npm list:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git remote:*)",
+      "Bash(git push:*)"
     ]
   }
 }
