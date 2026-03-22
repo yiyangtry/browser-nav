@@ -44,7 +44,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: '/home',
+    basename: '/browser-nav',
   }
 );
 
