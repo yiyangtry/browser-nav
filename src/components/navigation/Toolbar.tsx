@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface ToolbarProps {
   onRefresh: () => void;
 }
@@ -8,9 +10,9 @@ export function Toolbar({ onRefresh }: ToolbarProps) {
       <button className="ghost-btn" onClick={onRefresh}>
         刷新
       </button>
-      <a href="/manage" className="ghost-btn link-btn">
+      <Link to="/manage" className="ghost-btn link-btn">
         管理
-      </a>
+      </Link>
     </div>
   );
 }
