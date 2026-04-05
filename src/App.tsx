@@ -1,10 +1,25 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
+import { Spin } from 'antd';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { Layout } from './components/common/Layout';
 
 const NavigationPage = lazy(() => import('./pages/NavigationPage'));
 const ManagementPage = lazy(() => import('./pages/ManagementPage'));
 const Demo1Page = lazy(() => import('./pages/lab/Demo1Page'));
+
+function withSuspense(element: ReactNode) {
+  return (
+    <Suspense
+      fallback={
+        <div className="route-loading">
+          <Spin size="large" />
+        </div>
+      }
+    >
+      {element}
+    </Suspense>
+  );
+}
 
 const router = createBrowserRouter(
   [
@@ -14,27 +29,15 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: (
-            <Suspense fallback={<div>Loading...</div>}>
-              <NavigationPage />
-            </Suspense>
-          ),
+          element: withSuspense(<NavigationPage />),
         },
         {
           path: 'manage',
-          element: (
-            <Suspense fallback={<div>Loading...</div>}>
-              <ManagementPage />
-            </Suspense>
-          ),
+          element: withSuspense(<ManagementPage />),
         },
         {
           path: 'lab/demo1',
-          element: (
-            <Suspense fallback={<div>Loading...</div>}>
-              <Demo1Page />
-            </Suspense>
-          ),
+          element: withSuspense(<Demo1Page />),
         },
       ],
     },

@@ -1,4 +1,5 @@
-import { Beaker, Home, Settings } from 'lucide-react';
+import { createElement } from 'react';
+import { ExperimentOutlined, HomeOutlined, SettingOutlined } from '@ant-design/icons';
 import { MenuItem, SidebarConfig } from '@/types';
 
 /**
@@ -20,21 +21,21 @@ export const menuItems: MenuItem[] = [
   {
     id: 'home',
     label: '首页',
-    icon: Home,
+    icon: createElement(HomeOutlined),
     path: '/',
     type: 'link',
   },
   {
     id: 'manage',
     label: '管理',
-    icon: Settings,
+    icon: createElement(SettingOutlined),
     path: '/manage',
     type: 'link',
   },
   {
     id: 'lab',
     label: '实验室',
-    icon: Beaker,
+    icon: createElement(ExperimentOutlined),
     children: [
       {
         id: 'lab-demo1',
@@ -55,8 +56,8 @@ export const menuItems: MenuItem[] = [
 export const menuConfig: SidebarConfig = {
   items: menuItems,
   defaultCollapsed: false,
-  expandedWidth: 256,
-  collapsedWidth: 64,
+  expandedWidth: 272,
+  collapsedWidth: 88,
   // header: <div>Your Logo Here</div>,
   // footer: <div>User Info</div>,
 };

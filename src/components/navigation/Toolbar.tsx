@@ -1,18 +1,22 @@
-import { Link } from 'react-router-dom';
+import { ReloadOutlined, SettingOutlined } from '@ant-design/icons';
+import { Button, Space } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 interface ToolbarProps {
   onRefresh: () => void;
 }
 
 export function Toolbar({ onRefresh }: ToolbarProps) {
+  const navigate = useNavigate();
+
   return (
-    <div className="toolbar">
-      <button className="ghost-btn" onClick={onRefresh}>
+    <Space wrap>
+      <Button icon={<ReloadOutlined />} onClick={onRefresh}>
         刷新
-      </button>
-      <Link to="/manage" className="ghost-btn link-btn">
+      </Button>
+      <Button type="primary" ghost icon={<SettingOutlined />} onClick={() => navigate('/manage')}>
         管理
-      </Link>
-    </div>
+      </Button>
+    </Space>
   );
 }

@@ -1,5 +1,7 @@
-import { Site } from '@/types';
-import { escapeHtml } from '@/utils/normalization';
+import type { ReactNode } from 'react';
+import { ArrowRightOutlined } from '@ant-design/icons';
+import { List, Typography } from 'antd';
+import { type Site } from '@/types';
 
 interface SiteItemProps {
   site: Site;
@@ -7,23 +9,28 @@ interface SiteItemProps {
   onClick: (site: Site) => void;
 }
 
-function highlightSearchTerm(text: string, searchTerm: string): string {
-  if (!searchTerm) {
-    return escapeHtml(text);
+function highlightSearchTerm(text: string, searchTerm: string): ReactNode {
+  const normalizedTerm = searchTerm.trim();
+
+  if (!normalizedTerm) {
+    return text;
   }
 
-  const escapedText = escapeHtml(text);
-  const escapedSearchTerm = escapeHtml(searchTerm);
+  const regex = new RegExp(`(${escapeRegExp(normalizedTerm)})`, 'ig');
 
-  try {
-    const regex = new RegExp(
-      `(${escapedSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
-      'gi'
-    );
-    return escapedText.replace(regex, '<mark class="search-highlight">$1</mark>');
-  } catch {
-    return escapedText;
-  }
+  return text.split(regex).map((part, index) =>
+    part.toLowerCase() === normalizedTerm.toLowerCase() ? (
+      <mark key={`${part}-${index}`} className="search-mark">
+        {part}
+      </mark>
+    ) : (
+      <span key={`${part}-${index}`}>{part}</span>
+    )
+  );
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 export function SiteItem({ site, searchTerm, onClick }: SiteItemProps) {
@@ -39,28 +46,25 @@ export function SiteItem({ site, searchTerm, onClick }: SiteItemProps) {
   };
 
   return (
-    <li
-      className="site-item site-item-clickable"
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      role="link"
-      aria-label={`${site.name}，打开网站`}
-    >
-      <div className="site-main">
-        <p
-          className="site-name"
-          dangerouslySetInnerHTML={{
-            __html: highlightSearchTerm(site.name, searchTerm)
-          }}
-        />
-        <p
-          className="site-url"
-          dangerouslySetInnerHTML={{
-            __html: highlightSearchTerm(site.url, searchTerm)
-          }}
-        />
+    <List.Item>
+      <div
+        className="site-item-card"
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="link"
+        aria-label={`${site.name}，打开网站`}
+      >
+        <div className="site-item-card__meta">
+          <Typography.Text strong className="site-item-card__title">
+            {highlightSearchTerm(site.name, searchTerm)}
+          </Typography.Text>
+          <Typography.Text type="secondary" className="site-item-card__url">
+            {highlightSearchTerm(site.url, searchTerm)}
+          </Typography.Text>
+        </div>
+        <ArrowRightOutlined style={{ color: '#1768ac', fontSize: 18 }} />
       </div>
-    </li>
+    </List.Item>
   );
 }

@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 /**
  * Menu item type definitions for the sidebar menu system
@@ -8,8 +8,8 @@ export interface MenuItem {
   id: string;
   /** Display label for the menu item */
   label: string;
-  /** Icon component from lucide-react (optional) */
-  icon?: LucideIcon;
+  /** Icon element for the menu item (optional) */
+  icon?: ReactNode;
   /** Type of menu item: link, action, divider, or custom */
   type?: 'link' | 'action' | 'divider' | 'custom';
   /** Route path for navigation links (used when type is 'link') */
@@ -39,9 +39,9 @@ export interface SidebarConfig {
   /** Width of sidebar when collapsed (default: 64px) */
   collapsedWidth?: number;
   /** Custom header component */
-  header?: React.ReactNode;
+  header?: ReactNode;
   /** Custom footer component */
-  footer?: React.ReactNode;
+  footer?: ReactNode;
 }
 
 /**
@@ -68,7 +68,7 @@ export interface MenuItemProps {
  * Props for sidebar layout component
  */
 export interface SidebarLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   menuConfig: SidebarConfig;
 }
 

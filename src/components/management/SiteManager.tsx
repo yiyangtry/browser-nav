@@ -1,11 +1,12 @@
+import { Empty, Card, Space, Tag, Typography } from 'antd';
 import { useNavStore } from '@/stores/navStore';
 import { DraggableSiteCard } from './DraggableSiteCard';
-import { Site } from '@/types';
+import { type Site } from '@/types';
 import {
   DndContext,
   PointerSensor,
   closestCenter,
-  DragEndEvent,
+  type DragEndEvent,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -28,7 +29,7 @@ export function SiteManager({ onEditSite, onDeleteSite }: SiteManagerProps) {
   );
 
   if (sites.length === 0) {
-    return <p className="empty-state">还没有网址，先添加一个吧。</p>;
+    return <Empty className="empty-shell" description="还没有网址，先添加一个吧。" />;
   }
 
   const groupedSites = new Map<string, Array<{ site: Site; index: number }>>();
@@ -41,31 +42,26 @@ export function SiteManager({ onEditSite, onDeleteSite }: SiteManagerProps) {
     groupedSites.get(category)!.push({ site, index });
   });
 
-
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      const activeId = active.id as string;
-      const overId = over.id as string;
+    if (!over || active.id === over.id) {
+      return;
+    }
 
-      // Extract indices from the IDs
-      const activeIndex = parseInt(activeId.replace('site-', ''));
-      const overIndex = parseInt(overId.replace('site-', ''));
+    const activeIndex = parseInt(String(active.id).replace('site-', ''), 10);
+    const overIndex = parseInt(String(over.id).replace('site-', ''), 10);
 
-      // Find the categories for both items
-      const activeSite = sites[activeIndex];
-      const overSite = sites[overIndex];
+    const activeSite = sites[activeIndex];
+    const overSite = sites[overIndex];
 
-      // Only allow reordering within the same category
-      if (activeSite && overSite && activeSite.category === overSite.category) {
-        reorderSites(activeIndex, overIndex);
-      }
+    if (activeSite && overSite && activeSite.category === overSite.category) {
+      reorderSites(activeIndex, overIndex);
     }
   };
 
   return (
-    <div className="group-list">
+    <div className="site-manager__groups">
       {Array.from(groupedSites.entries()).map(([category, items]) => (
         <DndContext
           key={category}
@@ -73,16 +69,21 @@ export function SiteManager({ onEditSite, onDeleteSite }: SiteManagerProps) {
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          <section className="site-group">
-            <div className="group-head">
-              <h3 className="group-title">{category}</h3>
-              <span className="group-count">{items.length} 个</span>
-            </div>
+          <Card
+            className="site-manager-group-card"
+            bordered={false}
+            title={
+              <Typography.Title level={4} style={{ margin: 0 }}>
+                {category}
+              </Typography.Title>
+            }
+            extra={<Tag bordered={false}>{items.length} 个</Tag>}
+          >
             <SortableContext
               items={items.map(({ index }) => `site-${index}`)}
               strategy={verticalListSortingStrategy}
             >
-              <ul className="site-list">
+              <Space direction="vertical" size={14} style={{ width: '100%' }}>
                 {items.map(({ site, index }) => (
                   <DraggableSiteCard
                     key={`${site.url}-${index}`}
@@ -93,9 +94,9 @@ export function SiteManager({ onEditSite, onDeleteSite }: SiteManagerProps) {
                     onDelete={onDeleteSite}
                   />
                 ))}
-              </ul>
+              </Space>
             </SortableContext>
-          </section>
+          </Card>
         </DndContext>
       ))}
     </div>

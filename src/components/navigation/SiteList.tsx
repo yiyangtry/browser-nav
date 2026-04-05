@@ -1,4 +1,5 @@
-import { Site } from '@/types';
+import { List } from 'antd';
+import { type Site } from '@/types';
 import { SiteItem } from './SiteItem';
 
 interface SiteListProps {
@@ -13,15 +14,18 @@ export function SiteList({ sites, searchTerm, onSiteClick }: SiteListProps) {
   }
 
   return (
-    <ul className="site-list">
-      {sites.map((site, index) => (
+    <List
+      className="site-list"
+      split={false}
+      dataSource={sites}
+      renderItem={(site, index) => (
         <SiteItem
           key={`${site.url}-${index}`}
           site={site}
           searchTerm={searchTerm}
           onClick={onSiteClick}
         />
-      ))}
-    </ul>
+      )}
+    />
   );
 }

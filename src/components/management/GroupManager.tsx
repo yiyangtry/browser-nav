@@ -1,102 +1,160 @@
-import { useState, FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { App as AntApp, Button, Form, Input, Modal, Popconfirm, Space, Tag, Typography } from 'antd';
 import { useNavStore } from '@/stores/navStore';
 import { DEFAULT_CATEGORY } from '@/types';
 
-interface GroupManagerProps {
-  onMessage: (message: string, isError?: boolean) => void;
+interface GroupFormValues {
+  name: string;
 }
 
-export function GroupManager({ onMessage }: GroupManagerProps) {
+export function GroupManager() {
+  const { message, modal } = AntApp.useApp();
   const { groups, addGroup, renameGroup, deleteGroup } = useNavStore();
-  const [newGroupName, setNewGroupName] = useState('');
+  const [renameTarget, setRenameTarget] = useState<string | null>(null);
+  const [addForm] = Form.useForm<GroupFormValues>();
+  const [renameForm] = Form.useForm<GroupFormValues>();
 
-  const handleAddGroup = (e: FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (renameTarget) {
+      renameForm.setFieldsValue({ name: renameTarget });
+    } else {
+      renameForm.resetFields();
+    }
+  }, [renameForm, renameTarget]);
 
-    if (!newGroupName.trim()) {
-      onMessage('分组名不能为空。', true);
+  const handleAddGroup = ({ name }: GroupFormValues) => {
+    const success = addGroup(name.trim());
+
+    if (!success) {
+      message.error('分组已存在。');
       return;
     }
 
-    const success = addGroup(newGroupName.trim());
-
-    if (success) {
-      setNewGroupName('');
-      onMessage('分组添加成功。', false);
-    } else {
-      onMessage('分组已存在。', true);
-    }
+    addForm.resetFields();
+    message.success('分组添加成功。');
   };
 
-  const handleRenameGroup = (oldName: string) => {
-    const next = prompt('请输入新分组名', oldName);
-    if (!next) return;
+  const handleRenameSubmit = ({ name }: GroupFormValues) => {
+    if (!renameTarget) {
+      return;
+    }
 
-    const result = renameGroup(oldName, next);
+    const result = renameGroup(renameTarget, name.trim());
 
     if (result.success) {
-      onMessage('分组已改名。', false);
-    } else {
-      if (oldName === DEFAULT_CATEGORY && next !== DEFAULT_CATEGORY) {
-        onMessage('"未分组"不能改名。', true);
-      } else {
-        onMessage(result.error || '改名失败。', true);
-      }
-    }
-  };
-
-  const handleDeleteGroup = (name: string) => {
-    if (name === DEFAULT_CATEGORY) {
-      onMessage('"未分组"不能删除。', true);
+      message.success('分组已改名。');
+      setRenameTarget(null);
       return;
     }
 
-    const confirmed = confirm(`确认删除分组"${name}"吗？该分组网站会移动到"未分组"。`);
-    if (!confirmed) return;
+    if (renameTarget === DEFAULT_CATEGORY && name.trim() !== DEFAULT_CATEGORY) {
+      message.error('"未分组"不能改名。');
+      return;
+    }
 
-    deleteGroup(name);
-    onMessage(`已删除分组"${name}"，其网站已移到"未分组"。`, false);
+    message.error(result.error || '改名失败。');
   };
 
   return (
-    <div>
-      <h2>分组管理</h2>
+    <>
+      <Space direction="vertical" size={18} style={{ width: '100%' }}>
+        <div>
+          <Typography.Title level={4} style={{ marginTop: 0, marginBottom: 4 }}>
+            分组管理
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            新增、重命名或删除分组，删除后网站会自动移动到“未分组”。
+          </Typography.Text>
+        </div>
 
-      <form className="group-form" onSubmit={handleAddGroup}>
-        <input
-          type="text"
-          value={newGroupName}
-          onChange={(e) => setNewGroupName(e.target.value)}
-          placeholder="新分组名"
-        />
-        <button type="submit">添加</button>
-      </form>
-
-      <div className="group-manage-list">
-        {groups.map((group) => (
-          <div key={group} className="group-manage-item">
-            <span className="group-manage-name">{group}</span>
-            <div className="group-manage-actions">
-              <button
-                type="button"
-                className="ghost-btn mini-btn"
-                onClick={() => handleRenameGroup(group)}
-              >
-                改名
-              </button>
-              {group !== DEFAULT_CATEGORY && (
-                <button
-                  type="button"
-                  className="mini-delete-btn"
-                  onClick={() => handleDeleteGroup(group)}
-                >
-                  删除
-                </button>
-              )}
-            </div>
+        <Form<GroupFormValues> form={addForm} layout="vertical" onFinish={handleAddGroup}>
+          <div className="group-inline-form">
+            <Form.Item
+              name="name"
+              style={{ marginBottom: 0 }}
+              rules={[{ required: true, whitespace: true, message: '请输入分组名。' }]}
+            >
+              <Input placeholder="新分组名" size="large" />
+            </Form.Item>
+            <Button type="primary" htmlType="submit" size="large" icon={<PlusOutlined />}>
+              添加
+            </Button>
           </div>
-        ))}
-      </div>
-    </div>
+        </Form>
+
+        <div className="group-manager__list">
+          {groups.map((group) => (
+            <div key={group} className="group-manager__item">
+              <Space
+                align="center"
+                style={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}
+              >
+                <Space align="center" wrap>
+                  <Typography.Text strong>{group}</Typography.Text>
+                  {group === DEFAULT_CATEGORY ? (
+                    <Tag color="default" bordered={false}>
+                      固定分组
+                    </Tag>
+                  ) : null}
+                </Space>
+
+                <Space wrap>
+                  <Button
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                      if (group === DEFAULT_CATEGORY) {
+                        modal.info({
+                          title: '固定分组不可改名',
+                          content: '“未分组”是系统保留分组，不能重命名。',
+                        });
+                        return;
+                      }
+                      setRenameTarget(group);
+                    }}
+                  >
+                    改名
+                  </Button>
+
+                  {group !== DEFAULT_CATEGORY ? (
+                    <Popconfirm
+                      title={`删除分组“${group}”？`}
+                      description='该分组下的网站会移动到“未分组”。'
+                      okText="删除"
+                      cancelText="取消"
+                      onConfirm={() => {
+                        deleteGroup(group);
+                        message.success(`已删除分组“${group}”，其网站已移到“未分组”。`);
+                      }}
+                    >
+                      <Button danger>删除</Button>
+                    </Popconfirm>
+                  ) : null}
+                </Space>
+              </Space>
+            </div>
+          ))}
+        </div>
+      </Space>
+
+      <Modal
+        open={renameTarget !== null}
+        title="重命名分组"
+        onCancel={() => setRenameTarget(null)}
+        onOk={() => renameForm.submit()}
+        okText="保存"
+        cancelText="取消"
+      >
+        <Form<GroupFormValues> form={renameForm} layout="vertical" onFinish={handleRenameSubmit}>
+          <Form.Item
+            label="分组名称"
+            name="name"
+            rules={[{ required: true, whitespace: true, message: '请输入新的分组名。' }]}
+          >
+            <Input autoFocus />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 }

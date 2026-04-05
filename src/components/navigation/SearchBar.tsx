@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { Input, type InputRef } from 'antd';
 
 interface SearchBarProps {
   value: string;
@@ -6,11 +8,17 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ value, onChange }: SearchBarProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+      const activeElement = document.activeElement as HTMLElement | null;
+      const isEditing =
+        activeElement?.tagName === 'INPUT' ||
+        activeElement?.tagName === 'TEXTAREA' ||
+        activeElement?.isContentEditable;
+
+      if (event.key === '/' && !isEditing) {
         event.preventDefault();
         inputRef.current?.focus();
       }
@@ -21,18 +29,16 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
   }, []);
 
   return (
-    <div className="search-container">
-      <div className="search-box">
-        <input
-          ref={inputRef}
-          type="text"
-          className="search-input"
-          placeholder="搜索网站..."
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-        <span className="search-shortcut">/</span>
-      </div>
-    </div>
+    <Input
+      ref={inputRef}
+      size="large"
+      allowClear
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className="search-input"
+      placeholder="搜索网站、链接或用途..."
+      prefix={<SearchOutlined style={{ color: '#1768ac' }} />}
+      suffix={<span className="search-shortcut">/</span>}
+    />
   );
 }

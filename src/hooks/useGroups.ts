@@ -17,7 +17,7 @@ export function useGroups(sites: Site[]) {
       setGroups(synced);
       saveGroups(synced);
     }
-  }, [sites]);
+  }, [groups, sites]);
 
   const addGroup = useCallback((name: string) => {
     const normalized = normalizeGroupName(name);

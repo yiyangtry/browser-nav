@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Site } from '@/types';
+import { useEffect } from 'react';
+import { App as AntApp, Form, Input, Modal, Select } from 'antd';
+import { type Site } from '@/types';
 import { useNavStore } from '@/stores/navStore';
 
 interface EditModalProps {
@@ -7,117 +8,88 @@ interface EditModalProps {
   site: Site | null;
   siteIndex: number | null;
   onClose: () => void;
-  onMessage: (message: string, isError?: boolean) => void;
 }
 
-export function EditModal({ isOpen, site, siteIndex, onClose, onMessage }: EditModalProps) {
+interface EditFormValues {
+  name: string;
+  url: string;
+  category: string;
+}
+
+export function EditModal({ isOpen, site, siteIndex, onClose }: EditModalProps) {
+  const { message } = AntApp.useApp();
   const { groups, updateSite } = useNavStore();
-  const [name, setName] = useState('');
-  const [url, setUrl] = useState('');
-  const [category, setCategory] = useState('');
+  const [form] = Form.useForm<EditFormValues>();
 
   useEffect(() => {
-    if (site) {
-      setName(site.name);
-      setUrl(site.url);
-      setCategory(site.category);
-    }
-  }, [site]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (siteIndex === null || !site) {
-      onClose();
+    if (isOpen && site) {
+      form.setFieldsValue({
+        name: site.name,
+        url: site.url,
+        category: site.category,
+      });
       return;
     }
 
-    if (!name.trim() || !url.trim()) {
-      onMessage('请填写完整名称和网址。', true);
+    form.resetFields();
+  }, [form, isOpen, site]);
+
+  const handleFinish = ({ name, url, category }: EditFormValues) => {
+    if (siteIndex === null || !site) {
+      onClose();
       return;
     }
 
     const success = updateSite(siteIndex, {
       name: name.trim(),
       url: url.trim(),
-      category
+      category,
     });
 
     if (success) {
-      onMessage('网站已更新。', false);
+      message.success('网站已更新。');
       onClose();
-    } else {
-      onMessage('网址格式不正确，请检查后重试。', true);
+      return;
     }
+
+    message.error('网址格式不正确，请检查后重试。');
   };
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
-
-  if (!isOpen || !site) {
-    return null;
-  }
 
   return (
-    <div className="modal" aria-hidden="false">
-      <div className="modal-backdrop" data-close-modal onClick={handleBackdropClick} />
-      <div className="modal-panel">
-        <h2>编辑网站</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="site-form">
-            <label>
-              网站名称
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoFocus
-              />
-            </label>
+    <Modal
+      open={isOpen}
+      title="编辑网站"
+      onCancel={onClose}
+      onOk={() => form.submit()}
+      okText="保存"
+      cancelText="取消"
+      destroyOnClose
+    >
+      <Form<EditFormValues> form={form} layout="vertical" onFinish={handleFinish}>
+        <Form.Item
+          label="网站名称"
+          name="name"
+          rules={[{ required: true, whitespace: true, message: '请输入网站名称。' }]}
+        >
+          <Input autoFocus />
+        </Form.Item>
 
-            <label>
-              网站地址
-              <input
-                type="text"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
-            </label>
+        <Form.Item
+          label="网站地址"
+          name="url"
+          rules={[{ required: true, whitespace: true, message: '请输入网站地址。' }]}
+        >
+          <Input />
+        </Form.Item>
 
-            <label>
-              分组
-              <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                {groups.map((group) => (
-                  <option key={group} value={group}>
-                    {group}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="modal-actions">
-              <button type="submit">保存</button>
-              <button type="button" className="ghost-btn" onClick={onClose}>
-                取消
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+        <Form.Item
+          label="分组"
+          name="category"
+          rules={[{ required: true, message: '请选择分组。' }]}
+        >
+          <Select options={groups.map((group) => ({ value: group, label: group }))} />
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 }
